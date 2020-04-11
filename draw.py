@@ -34,31 +34,48 @@ def scanline_convert(polygons, i, screen, zbuffer ):
         else:
             bot = polygons[i+1]
             mid = polygons[i]
+    
     #indices: 0 = x, 1 = y, 2 = z
     #print([top,mid,bot])
     x0 = bot[0]
     x1 = bot[0]
+    z0 = bot[2]
+    z1 = bot[2]
     y = bot[1]
+    
+    #calculate delta
     dx0 = (top[0] - bot[0]) / (top[1] - bot[1] + 1)
+    dz0 = (top[2] - bot[2]) / (top[1] - bot[1] + 1)
     if mid[1] - bot[1] == 0:
         dx1 = (top[0] - mid[0]) / (top[1] - mid[1] + 1)
         dx1_1 = dx1
+        dz1 = (top[2] - mid[2]) / (top[1] - mid[1] + 1)
+        dz1_1 = dz1
     elif top[1] - mid[1] == 0:
         dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1] + 1)
         dx1_1 = dx1
+        dz1 = (mid[2] - bot[2]) / (mid[1] - bot[1] + 1)
+        dz1_1 = dz1
     else:
         dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1] + 1)
         dx1_1 = (top[0] - mid[0]) / (top[1] - mid[1] + 1)
+        dz1 = (mid[2] - bot[2]) / (mid[1] - bot[1] + 1)
+        dz1_1 = (top[2] - mid[2]) / (top[1] - mid[1] + 1)
     color = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
+    
     a = 0
-    while y <= top[1]:
-        draw_line(int(x0),int(y),1.0,int(x1),int(y),1.0,screen,zbuffer,color)
+    while int(y) <= top[1]:
+        draw_line(int(x0),int(y),z0,int(x1),int(y),z1,screen,zbuffer,color)
         x0 += dx0
         x1 += dx1
+        z0 += dz0
+        z1 += dz1
         y += 1
-        if y >= mid[1] and a == 0:
+        if y > mid[1] and a == 0:
             dx1 = dx1_1
             x1 = mid[0]
+            dz1 = dz1_1
+            z1 = mid[2]
             a += 1
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
@@ -77,27 +94,27 @@ def draw_polygons( polygons, screen, zbuffer, color ):
         normal = calculate_normal(polygons, point)[:]
         #print normal
         if normal[2] > 0:
-            draw_line( int(polygons[point][0]),
-                       int(polygons[point][1]),
-                       polygons[point][2],
-                       int(polygons[point+1][0]),
-                       int(polygons[point+1][1]),
-                       polygons[point+1][2],
-                       screen, zbuffer, color)
-            draw_line( int(polygons[point+2][0]),
-                       int(polygons[point+2][1]),
-                       polygons[point+2][2],
-                       int(polygons[point+1][0]),
-                       int(polygons[point+1][1]),
-                       polygons[point+1][2],
-                       screen, zbuffer, color)
-            draw_line( int(polygons[point][0]),
-                       int(polygons[point][1]),
-                       polygons[point][2],
-                       int(polygons[point+2][0]),
-                       int(polygons[point+2][1]),
-                       polygons[point+2][2],
-                       screen, zbuffer, color)
+            # draw_line( int(polygons[point][0]),
+                       # int(polygons[point][1]),
+                       # polygons[point][2],
+                       # int(polygons[point+1][0]),
+                       # int(polygons[point+1][1]),
+                       # polygons[point+1][2],
+                       # screen, zbuffer, color)
+            # draw_line( int(polygons[point+2][0]),
+                       # int(polygons[point+2][1]),
+                       # polygons[point+2][2],
+                       # int(polygons[point+1][0]),
+                       # int(polygons[point+1][1]),
+                       # polygons[point+1][2],
+                       # screen, zbuffer, color)
+            # draw_line( int(polygons[point][0]),
+                       # int(polygons[point][1]),
+                       # polygons[point][2],
+                       # int(polygons[point+2][0]),
+                       # int(polygons[point+2][1]),
+                       # polygons[point+2][2],
+                       # screen, zbuffer, color)
             scanline_convert(polygons,point,screen,zbuffer)
         point+= 3
 
@@ -389,8 +406,4 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
             d+= d_east
         z += dz
         loop_start+= 1
-    
-    
-        
-    
-    plot( screen, zbuffer, color, x, y, 0 )
+    plot( screen, zbuffer, color, x, y, z )

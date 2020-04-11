@@ -1,9 +1,62 @@
 from display import *
 from matrix import *
 from gmath import *
+import random
 
+def findMax(t1,t2,t3,idx):
+    if t1[idx] >= t2[idx] and t1[idx] >= t3[idx]:
+        return t1
+    elif t2[idx] >= t1[idx] and t2[idx] >= t3[idx]:
+        return t2
+    else:
+        return t3
+        
 def scanline_convert(polygons, i, screen, zbuffer ):
-    pass
+    top = findMax(polygons[i],polygons[i+1],polygons[i+2],1)
+    if top == polygons[i]:
+        if polygons[i+1][1] <= polygons[i+2][1]:
+            bot = polygons[i+1]
+            mid = polygons[i+2]
+        else:
+            bot = polygons[i+2]
+            mid = polygons[i+1]
+    elif top == polygons[i+1]:
+        if polygons[i][1] <= polygons[i+2][1]:
+            bot = polygons[i]
+            mid = polygons[i+2]
+        else:
+            bot = polygons[i+2]
+            mid = polygons[i]
+    else:
+        if polygons[i][1] <= polygons[i+1][1]:
+            bot = polygons[i]
+            mid = polygons[i+1]
+        else:
+            bot = polygons[i+1]
+            mid = polygons[i]
+    #indices: 0 = x, 1 = y, 2 = z
+    x0 = int(bot[0])
+    x1 = int(bot[0])
+    y = int(bot[1])
+    dx0 = (top[0] - bot[0]) / (top[1] - bot[1])
+    if mid[1] - bot[1] == 0:
+        dx1 = (top[0] - mid[0]) / (top[1] - mid[1])
+        dx1_1 = dx1
+    elif top[1] - mid[1] == 0:
+        dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1])
+        dx1_1 = dx1
+    else:
+        dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1])
+        dx1_1 = (top[0] - mid[0]) / (top[1] - mid[1])
+    color = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
+    while y <= top[1]:
+        draw_line(x0,y,1,x1,y,1,screen,zbuffer,color)
+        x0 = int(x0 + dx0)
+        x1 = int(x1 + dx1)
+        y += 1
+        if y >= mid[1]:
+            dx1 = dx1_1
+            x1 = int(mid[0])
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x0, y0, z0)
@@ -42,6 +95,7 @@ def draw_polygons( polygons, screen, zbuffer, color ):
                        int(polygons[point+2][1]),
                        polygons[point+2][2],
                        screen, zbuffer, color)
+            scanline_convert(polygons,point,screen,zbuffer)
         point+= 3
 
 

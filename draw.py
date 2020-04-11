@@ -35,28 +35,31 @@ def scanline_convert(polygons, i, screen, zbuffer ):
             bot = polygons[i+1]
             mid = polygons[i]
     #indices: 0 = x, 1 = y, 2 = z
-    x0 = int(bot[0])
-    x1 = int(bot[0])
-    y = int(bot[1])
-    dx0 = (top[0] - bot[0]) / (top[1] - bot[1])
+    #print([top,mid,bot])
+    x0 = bot[0]
+    x1 = bot[0]
+    y = bot[1]
+    dx0 = (top[0] - bot[0]) / (top[1] - bot[1] + 1)
     if mid[1] - bot[1] == 0:
-        dx1 = (top[0] - mid[0]) / (top[1] - mid[1])
+        dx1 = (top[0] - mid[0]) / (top[1] - mid[1] + 1)
         dx1_1 = dx1
     elif top[1] - mid[1] == 0:
-        dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1])
+        dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1] + 1)
         dx1_1 = dx1
     else:
-        dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1])
-        dx1_1 = (top[0] - mid[0]) / (top[1] - mid[1])
+        dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1] + 1)
+        dx1_1 = (top[0] - mid[0]) / (top[1] - mid[1] + 1)
     color = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
+    a = 0
     while y <= top[1]:
-        draw_line(x0,y,1,x1,y,1,screen,zbuffer,color)
-        x0 = int(x0 + dx0)
-        x1 = int(x1 + dx1)
+        draw_line(int(x0),int(y),1.0,int(x1),int(y),1.0,screen,zbuffer,color)
+        x0 += dx0
+        x1 += dx1
         y += 1
-        if y >= mid[1]:
+        if y >= mid[1] and a == 0:
             dx1 = dx1_1
-            x1 = int(mid[0])
+            x1 = mid[0]
+            a += 1
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x0, y0, z0)

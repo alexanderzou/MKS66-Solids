@@ -42,16 +42,20 @@ def scanline_convert(polygons, i, screen, zbuffer ):
     z0 = bot[2]
     z1 = bot[2]
     y = bot[1]
+    topCase = False
+    botCase = False
     
     #calculate delta
     dx0 = (top[0] - bot[0]) / (top[1] - bot[1] + 1)
     dz0 = (top[2] - bot[2]) / (top[1] - bot[1] + 1)
     if mid[1] - bot[1] == 0:
+        botCase = True
         dx1 = (top[0] - mid[0]) / (top[1] - mid[1] + 1)
         dx1_1 = dx1
         dz1 = (top[2] - mid[2]) / (top[1] - mid[1] + 1)
         dz1_1 = dz1
     elif top[1] - mid[1] == 0:
+        topCase = True
         dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1] + 1)
         dx1_1 = dx1
         dz1 = (mid[2] - bot[2]) / (mid[1] - bot[1] + 1)
@@ -65,6 +69,13 @@ def scanline_convert(polygons, i, screen, zbuffer ):
     
     a = 0
     while int(y) <= top[1]:
+        if botCase == True and a == 0:
+            dx1 = dx1_1
+            x1 = mid[0]
+            dz1 = dz1_1
+            z1 = mid[2]
+            #y += 1
+            a += 1
         draw_line(int(x0),int(y),z0,int(x1),int(y),z1,screen,zbuffer,color)
         x0 += dx0
         x1 += dx1

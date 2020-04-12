@@ -10,7 +10,7 @@ def findMax(t1,t2,t3,idx):
         return t2
     else:
         return t3
-        
+
 def scanline_convert(polygons, i, screen, zbuffer ):
     top = findMax(polygons[i],polygons[i+1],polygons[i+2],1)
     if top == polygons[i]:
@@ -34,7 +34,7 @@ def scanline_convert(polygons, i, screen, zbuffer ):
         else:
             bot = polygons[i+1]
             mid = polygons[i]
-    
+
     #indices: 0 = x, 1 = y, 2 = z
     #print([top,mid,bot])
     x0 = bot[0]
@@ -42,13 +42,13 @@ def scanline_convert(polygons, i, screen, zbuffer ):
     z0 = bot[2]
     z1 = bot[2]
     y = bot[1]
-    botCase = False
-    
+    topCase = False
+
     #calculate delta
     dx0 = (top[0] - bot[0]) / (top[1] - bot[1] + 1)
     dz0 = (top[2] - bot[2]) / (top[1] - bot[1] + 1)
     if mid[1] - bot[1] == 0:
-        botCase = True
+        topCase = True
         dx1 = (top[0] - mid[0]) / (top[1] - mid[1] + 1)
         dx1_1 = dx1
         dz1 = (top[2] - mid[2]) / (top[1] - mid[1] + 1)
@@ -64,21 +64,21 @@ def scanline_convert(polygons, i, screen, zbuffer ):
         dz1 = (mid[2] - bot[2]) / (mid[1] - bot[1] + 1)
         dz1_1 = (top[2] - mid[2]) / (top[1] - mid[1] + 1)
     color = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
-    
+
     a = 0
     while int(y) <= int(top[1]):
-        if botCase == True and a == 0:
+        if topCase == True and a == 0:
             dx1 = dx1_1
             x1 = mid[0]
             dz1 = dz1_1
             z1 = mid[2]
             a += 1
         draw_line(int(x0),int(y),z0,int(x1),int(y),z1,screen,zbuffer,color)
+        y += 1
         x0 += dx0
         x1 += dx1
         z0 += dz0
         z1 += dz1
-        y += 1
         if int(y) >= int(mid[1]) and a == 0:
             dx1 = dx1_1
             x1 = mid[0]
@@ -102,27 +102,27 @@ def draw_polygons( polygons, screen, zbuffer, color ):
         normal = calculate_normal(polygons, point)[:]
         #print normal
         if normal[2] > 0:
-            # draw_line( int(polygons[point][0]),
-                       # int(polygons[point][1]),
-                       # polygons[point][2],
-                       # int(polygons[point+1][0]),
-                       # int(polygons[point+1][1]),
-                       # polygons[point+1][2],
-                       # screen, zbuffer, color)
-            # draw_line( int(polygons[point+2][0]),
-                       # int(polygons[point+2][1]),
-                       # polygons[point+2][2],
-                       # int(polygons[point+1][0]),
-                       # int(polygons[point+1][1]),
-                       # polygons[point+1][2],
-                       # screen, zbuffer, color)
-            # draw_line( int(polygons[point][0]),
-                       # int(polygons[point][1]),
-                       # polygons[point][2],
-                       # int(polygons[point+2][0]),
-                       # int(polygons[point+2][1]),
-                       # polygons[point+2][2],
-                       # screen, zbuffer, color)
+            draw_line( int(polygons[point][0]),
+                       int(polygons[point][1]),
+                       polygons[point][2],
+                       int(polygons[point+1][0]),
+                       int(polygons[point+1][1]),
+                       polygons[point+1][2],
+                       screen, zbuffer, color)
+            draw_line( int(polygons[point+2][0]),
+                       int(polygons[point+2][1]),
+                       polygons[point+2][2],
+                       int(polygons[point+1][0]),
+                       int(polygons[point+1][1]),
+                       polygons[point+1][2],
+                       screen, zbuffer, color)
+            draw_line( int(polygons[point][0]),
+                       int(polygons[point][1]),
+                       polygons[point][2],
+                       int(polygons[point+2][0]),
+                       int(polygons[point+2][1]),
+                       polygons[point+2][2],
+                       screen, zbuffer, color)
             scanline_convert(polygons,point,screen,zbuffer)
         point+= 3
 
@@ -384,7 +384,7 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
             d_east = -1 * B
             loop_start = y1
             loop_end = y
-    
+
     parallel = False
     if wide:
         NoP = x1 - x0
@@ -399,7 +399,7 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
         z = max(z0,z1)
     else:
         z = z0
-    
+
     while ( loop_start < loop_end ):
         plot( screen, zbuffer, color, x, y, z )
         if ( (wide and ((A > 0 and d > 0) or (A < 0 and d < 0))) or

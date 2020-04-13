@@ -49,20 +49,20 @@ def scanline_convert(polygons, i, screen, zbuffer ):
     dz0 = (top[2] - bot[2]) / (top[1] - bot[1] + 1)
     if mid[1] - bot[1] == 0:
         topCase = True
-        dx1 = (top[0] - mid[0]) / (top[1] - mid[1] + 1)
-        dx1_1 = dx1
-        dz1 = (top[2] - mid[2]) / (top[1] - mid[1] + 1)
-        dz1_1 = dz1
-    elif top[1] - mid[1] == 0:
-        dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1] + 1)
-        dx1_1 = dx1
-        dz1 = (mid[2] - bot[2]) / (mid[1] - bot[1] + 1)
-        dz1_1 = dz1
-    else:
-        dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1] + 1)
-        dx1_1 = (top[0] - mid[0]) / (top[1] - mid[1] + 1)
-        dz1 = (mid[2] - bot[2]) / (mid[1] - bot[1] + 1)
-        dz1_1 = (top[2] - mid[2]) / (top[1] - mid[1] + 1)
+        # dx1 = (top[0] - mid[0]) / (top[1] - mid[1] + 1)
+        # dx1_1 = dx1
+        # dz1 = (top[2] - mid[2]) / (top[1] - mid[1] + 1)
+        # dz1_1 = dz1
+    # elif top[1] - mid[1] == 0:
+        # dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1] + 1)
+        # dx1_1 = dx1
+        # dz1 = (mid[2] - bot[2]) / (mid[1] - bot[1] + 1)
+        # dz1_1 = dz1
+    # else:
+    dx1 = (mid[0] - bot[0]) / (mid[1] - bot[1] + 1)
+    dx1_1 = (top[0] - mid[0]) / (top[1] - mid[1] + 1)
+    dz1 = (mid[2] - bot[2]) / (mid[1] - bot[1] + 1)
+    dz1_1 = (top[2] - mid[2]) / (top[1] - mid[1] + 1)
     color = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
 
     a = 0
@@ -102,27 +102,27 @@ def draw_polygons( polygons, screen, zbuffer, color ):
         normal = calculate_normal(polygons, point)[:]
         #print normal
         if normal[2] > 0:
-            draw_line( int(polygons[point][0]),
-                       int(polygons[point][1]),
-                       polygons[point][2],
-                       int(polygons[point+1][0]),
-                       int(polygons[point+1][1]),
-                       polygons[point+1][2],
-                       screen, zbuffer, color)
-            draw_line( int(polygons[point+2][0]),
-                       int(polygons[point+2][1]),
-                       polygons[point+2][2],
-                       int(polygons[point+1][0]),
-                       int(polygons[point+1][1]),
-                       polygons[point+1][2],
-                       screen, zbuffer, color)
-            draw_line( int(polygons[point][0]),
-                       int(polygons[point][1]),
-                       polygons[point][2],
-                       int(polygons[point+2][0]),
-                       int(polygons[point+2][1]),
-                       polygons[point+2][2],
-                       screen, zbuffer, color)
+            # draw_line( int(polygons[point][0]),
+                       # int(polygons[point][1]),
+                       # polygons[point][2],
+                       # int(polygons[point+1][0]),
+                       # int(polygons[point+1][1]),
+                       # polygons[point+1][2],
+                       # screen, zbuffer, color)
+            # draw_line( int(polygons[point+2][0]),
+                       # int(polygons[point+2][1]),
+                       # polygons[point+2][2],
+                       # int(polygons[point+1][0]),
+                       # int(polygons[point+1][1]),
+                       # polygons[point+1][2],
+                       # screen, zbuffer, color)
+            # draw_line( int(polygons[point][0]),
+                       # int(polygons[point][1]),
+                       # polygons[point][2],
+                       # int(polygons[point+2][0]),
+                       # int(polygons[point+2][1]),
+                       # polygons[point+2][2],
+                       # screen, zbuffer, color)
             scanline_convert(polygons,point,screen,zbuffer)
         point+= 3
 

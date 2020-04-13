@@ -29,7 +29,7 @@ def new_zbuffer( width = XRES, height = YRES ):
 
 def plot( screen, zbuffer, color, x, y, z ):
     newy = YRES - 1 - y
-    if ( x >= 0 and x < XRES and newy >= 0 and newy < YRES and z > zbuffer[newy][x] ):
+    if ( x >= 0 and x < XRES and newy >= 0 and newy < YRES and int(z) >= zbuffer[newy][x] ):
         #print('({}, {}): {}'.format(x, y, z))
         screen[newy][x] = color[:]
         zbuffer[newy][x] = z

@@ -13,7 +13,16 @@ t = new_matrix()
 ident(t)
 csystems = [ t ]
 
-
 parse_file( 'script', edges, polygons, csystems, screen, zbuffer, color )
 
+screen = new_screen()
+zbuffer = new_zbuffer()
+color = [ 0, 255, 0 ]
+edges = []
+polygons = []
+t = new_matrix()
+ident(t)
+csystems = [ t ]
 
+
+parse_file( 'mypic', edges, polygons, csystems, screen, zbuffer, color )
